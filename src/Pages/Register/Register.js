@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { validateAadhaar, validateEmail, validateMobileNumber, validatePAN, validatePassword } from '../Validation/Validation';
 import { registerUser } from '../../Apicalls/User';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,6 +20,7 @@ function Register() {
   });
 
   const [errors, setErrors] = useState({});
+  const Navigate= useNavigate()
 
   const handleChange =  (e) => {
     const { name, value } = e.target;
@@ -66,6 +70,8 @@ function Register() {
     const response = await registerUser(formData);
     if (response.message) {
       setBackendMessage(response.message);
+      localStorage.setItem('token',response.data)
+      Navigate('/home')
     } else {
       setBackendMessage(response.error);
     }
@@ -193,9 +199,14 @@ function Register() {
             Register
           </button>
 
-          <button type="button" className="w-full bg-blue-100 text-blue-700 py-2 rounded mt-4 hover:bg-blue-200">
-            Already Registered? Login
-          </button>
+          <Link to="/login" className="w-full">
+    <button
+      type="button"
+      className="w-full bg-blue-100 text-blue-700 py-2 rounded mt-4 hover:bg-blue-200"
+    >
+      Already Registered? Login
+    </button>
+  </Link>
         </div>
         {backendMessage && <p className="col-span-1 md:col-span-2 text-center text-red-500 mt-4">{backendMessage}</p>}
       </form>
