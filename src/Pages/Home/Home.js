@@ -11,15 +11,25 @@ function Home() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axiosInstance.get('/api/user/get-current-user');
-        setUserData(response.data.data); // Store fetched user data in state
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axiosInstance.get('/api/user/get-current-user', {
+            headers: {
+              Authorization: `Bearer ${token}`  // Add authorization header with token
+            }
+          });
+          setUserData(response.data.data); // Store fetched user data in state
+        } else {
+          console.log('No token found in localStorage');
+        }
       } catch (error) {
         console.error('Error fetching user:', error);
       }
     };
-
+  
     fetchUser();
   }, []);
+  
 
   const handleLogout = () => {
     localStorage.removeItem('token')
